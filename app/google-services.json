@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "209676966705",
+    "firebase_url": "https://sanyog-f637a.firebaseio.com",
+    "project_id": "sanyog-f637a",
+    "storage_bucket": "sanyog-f637a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:209676966705:android:ec83677e9ec0ddeb74ae10",
+        "android_client_info": {
+          "package_name": "com.snehasisdebbarman.sanyog"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "209676966705-4eipgjrtllln2usheh1e6rsodjnf1m7j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2pRl9itH_8kEwOmGnLz6gB_nXWCkbLkM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "209676966705-4eipgjrtllln2usheh1e6rsodjnf1m7j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
