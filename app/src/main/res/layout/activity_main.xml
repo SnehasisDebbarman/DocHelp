@@ -31,31 +31,39 @@
 
     </LinearLayout>
 
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/register_btn"
-        style="@style/AppTheme"
-        android:layout_width="150dp"
-        android:layout_gravity="center"
-        android:padding="@dimen/paddingMedium"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="19dp"
-        android:drawableLeft="@drawable/ic_register_white"
-        android:background="@color/colorPrimary"
-        android:text="Register"
-        android:textColor="#fff"
-         />
+        android:orientation="horizontal"
+        >
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/register_btn"
+            style="@style/AppTheme"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:padding="@dimen/paddingMedium"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_register_white"
+            android:background="@color/colorPrimary"
+            android:text="Register"
+            android:textColor="#fff"
+            android:layout_margin="10dp"
+            />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/login_btn"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="Login"
-        android:textColor="#fff"
-        android:padding="10sp"
-        android:drawableLeft="@drawable/ic_login_white"
-        android:background="@color/colorPrimary"
-        android:layout_gravity="center"
+        <com.google.android.material.button.MaterialButton
+            style="@style/AppTheme"
+            android:id="@+id/login_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Login"
+            android:textColor="#fff"
+            android:padding="10sp"
+            android:drawableLeft="@drawable/ic_login_white"
+            android:background="@color/colorPrimary"
+            android:layout_margin="10dp"
+            />
 
-        style="@style/AppTheme"/>
+    </LinearLayout>
+
 </LinearLayout>

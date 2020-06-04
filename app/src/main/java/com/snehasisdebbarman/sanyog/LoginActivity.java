@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,10 +32,12 @@ import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
     EditText mEmailEt,mPassEt;
-    Button mLoginBtn;
+    Button mLoginDoctorBtn,mLoginPatientBtn;
     ProgressDialog mProgressDialog;
     private FirebaseAuth mAuth;
     TextView have_account,forget_pass;
+    RadioGroup radioGroup;
+    String  Ausers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +54,18 @@ public class LoginActivity extends AppCompatActivity {
 
         mEmailEt=findViewById(R.id.emailET);
         mPassEt=findViewById(R.id.passET);
-        mLoginBtn=findViewById(R.id.loginBtn);
+        mLoginDoctorBtn=findViewById(R.id.loginDoctorBtn);
+        mLoginPatientBtn=findViewById(R.id.loginPatientBtn);
         have_account=findViewById(R.id.have_Account);
         forget_pass=findViewById(R.id.forget_password);
+
+
+
 
         mProgressDialog =new ProgressDialog(this);
         mProgressDialog.setMessage("Logging......");
 
-        mLoginBtn.setOnClickListener(new View.OnClickListener() {
+        mLoginDoctorBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email=mEmailEt.getText().toString();
@@ -70,7 +77,24 @@ public class LoginActivity extends AppCompatActivity {
 
                 }
                 else{
-                    loginUser(email,password);
+                    loginDoctor(email,password);
+                }
+            }
+        });
+
+        mLoginPatientBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email=mEmailEt.getText().toString();
+                String password=mPassEt.getText().toString().trim();
+                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+
+                    mEmailEt.setError("Invalid Email");
+                    mEmailEt.setFocusable(true);
+
+                }
+                else{
+                    loginPatient(email,password);
                 }
             }
         });
@@ -106,7 +130,6 @@ public class LoginActivity extends AppCompatActivity {
         linearLayout.setPadding(10,10,10,10);
 
         builder.setView(linearLayout);
-
         builder.setPositiveButton("Recover", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -153,7 +176,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void loginUser(String email, String password) {
+    private void loginDoctor(String email, String password) {
         mProgressDialog.show();
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -162,29 +185,91 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             mProgressDialog.dismiss();
                             // Sign in success, update UI with the signed-in user's information
-                            FirebaseUser user = mAuth.getCurrentUser();
+
+
+                                FirebaseUser user = mAuth.getCurrentUser();
                                 String email= user.getEmail();
                                 String uid =user.getUid();
                                 HashMap<Object,String> hashMap =new HashMap<>();
                                 hashMap.put("email",email);
-                                hashMap.put("uid",uid);
+                                hashMap.put("doc_uid",uid);
                                 hashMap.put("name","");// will add later one edit profile
                                 hashMap.put("Phone","");// will add later one edit profile
-                                hashMap.put("image","");// will add later one edit profile
-                                hashMap.put("qualification","");// will add later one edit profile
-                                hashMap.put("patients","");
+                                hashMap.put("image","");
+                                hashMap.put("Speciality","");
+                                hashMap.put("qualification","");// will add later one edit profile// will add later one edit profile
+
                                 //firebase database instance
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 // path to store in 'Users'
-                                DatabaseReference reference = database.getReference("users");
-                                // put data in hasmap
+                                DatabaseReference reference = database.getReference("Doctors");
                                 reference.child(uid).setValue(hashMap);
 
+                                Toast.makeText(LoginActivity.this,"Doctors Registered.....\n"+user.getEmail(),Toast.LENGTH_SHORT).show();
+                                Intent i = new Intent(LoginActivity.this, DashboardActivity.class);
+                                i.putExtra("auser", Ausers);
+                                startActivity(i);
+                               // startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+                                finish();
+                            //
 
-                                //
+                        } else {
+                            mProgressDialog.dismiss();
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
 
-                            startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+                        // ...
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                mProgressDialog.dismiss();
+                Toast.makeText(LoginActivity.this, ""+e.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+    private void loginPatient(String email, String password)
+    {
+        mProgressDialog.show();
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            mProgressDialog.dismiss();
+                            // Sign in success, update UI with the signed-in user's information
+
+
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            String email= user.getEmail();
+                            String uid =user.getUid();
+                            HashMap<Object,String> hashMap =new HashMap<>();
+                            hashMap.put("email",email);
+                            hashMap.put("doc_uid",uid);
+                            hashMap.put("name","");// will add later one edit profile
+                            hashMap.put("Phone","");// will add later one edit profile
+                            hashMap.put("image","");
+                            hashMap.put("Speciality","");
+                            hashMap.put("qualification","");// will add later one edit profile// will add later one edit profile
+
+                            //firebase database instance
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            // path to store in 'Users'
+                            DatabaseReference reference = database.getReference("Patients");
+                            reference.child(uid).setValue(hashMap);
+
+                            Toast.makeText(LoginActivity.this,"Patient Registered.....\n"+user.getEmail(),Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(LoginActivity.this, PatientDashboardActivity.class);
+                            i.putExtra("auser", Ausers);
+                            startActivity(i);
+                            // startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                             finish();
+                            //
 
                         } else {
                             mProgressDialog.dismiss();

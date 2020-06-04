@@ -6,18 +6,21 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="login">Login</string>
     <string name="email">Email</string>
+    <string name="medicine_name">Medicine Name</string>
+    <string name="how_many_times">How Many Times</string>
+    <string name="medicine_1">Medicine 1</string>
 
 
-    <string-array name="blood_group" >
-            <item>Blood Group</item>
-            <item>A+</item>
-            <item>A-</item>
-            <item>B+</item>
-            <item>B-</item>
-            <item>AB+</item>
-            <item>AB-</item>
-            <item>O+</item>
-            <item>O-</item>
-        </string-array>
+    <string-array name="blood_group">
+        <item>Blood Group</item>
+        <item>A+</item>
+        <item>A-</item>
+        <item>B+</item>
+        <item>B-</item>
+        <item>AB+</item>
+        <item>AB-</item>
+        <item>O+</item>
+        <item>O-</item>
+    </string-array>
 </resources>
 

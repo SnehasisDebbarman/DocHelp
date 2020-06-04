@@ -1,5 +1,13 @@
 package com.snehasisdebbarman.sanyog;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -7,22 +15,13 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Outline;
+import android.icu.text.CaseMap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.util.TimeUtils;
-import androidx.fragment.app.Fragment;
-
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,7 +30,6 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.canvas.CanvasCompat;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -49,25 +47,20 @@ import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
-import static android.app.Activity.RESULT_OK;
 import static com.google.firebase.storage.FirebaseStorage.getInstance;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
-public class ProfileFragment extends Fragment {
-
+public class DoctorProfile extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
+
     FirebaseUser user;
     FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
+    DatabaseReference databaseReference1;
     StorageReference storageReference;
     //path to store profile images
     String storagePath="users_profile_imgs/";
 
     ImageView avatarIV;
-    TextView nameTV, emailTV, phoneTV,qualificationTV;
+    TextView nameTV, emailTV, phoneTV,qualificationTV,locationTV,specialityTV;
     FloatingActionButton fab;
     ProgressDialog pd;
 
@@ -79,51 +72,47 @@ public class ProfileFragment extends Fragment {
     private static final int IMAGE_PICK_CAMERA_REQUEST_CODE =400;
 
     //permission array
-    String cameraPermissions[];
-    String storagePermissions[];
+    String[] cameraPermissions;
+    String[] storagePermissions;
     Uri image_uri;
 
     //string to choose
     String profilePhotoPic;
-
-
-
-    public ProfileFragment() {
-        // Required empty public constructor
-    }
-
+    String auser;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_doctor_profile);
 
+        if(auser==null){
+            auser="Doctors";
+        }
         firebaseAuth =FirebaseAuth.getInstance();
         user =firebaseAuth.getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference =firebaseDatabase.getReference("users/");
+        databaseReference1 =firebaseDatabase.getReference(auser+"/");
         storageReference=getInstance().getReference();
 
+
         // init views
-        avatarIV =view.findViewById(R.id.avatarIV);
-        nameTV =view.findViewById(R.id.nameTV);
-        qualificationTV =view.findViewById(R.id.qualificationTV);
-        emailTV =view.findViewById(R.id.emailTV);
-        phoneTV =view.findViewById(R.id.phoneTV);
-        fab=view.findViewById(R.id.fab);
+        phoneTV=findViewById(R.id.phoneTV);
+        avatarIV =findViewById(R.id.avatarIV);
+        nameTV =findViewById(R.id.nameTV);
+        qualificationTV =findViewById(R.id.qualificationTV);
+        emailTV =findViewById(R.id.emailTV);
+        locationTV=findViewById(R.id.locationTV);
+        specialityTV=findViewById(R.id.specialityTV);
 
-        pd =new ProgressDialog(getActivity());
+        fab=findViewById(R.id.fab);
 
+        pd =new ProgressDialog(this);
 
         //init array of permission
         cameraPermissions=new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermissions=new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-
-
-
-        Query query =databaseReference.orderByChild("email").equalTo(user.getEmail());
+        Query query =databaseReference1.orderByChild("email").equalTo(user.getEmail());
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -133,11 +122,26 @@ public class ProfileFragment extends Fragment {
                     String image =""+ds.child("image").getValue();
                     String phone =""+ds.child("Phone").getValue();
                     String qualification =""+ds.child("qualification").getValue();
+                    String location =""+ds.child("location").getValue();
+                    String speciality =""+ds.child("speciality").getValue();
 
-                    nameTV.setText(name);
+
+                    if(name!=""){
+                        String name1= "Dr. "+name;
+                        nameTV.setText(name1);
+
+                    }
+                    else{
+                        nameTV.setText("Add Name");
+
+                    }
+
                     emailTV.setText(email);
                     phoneTV.setText(phone);
                     qualificationTV.setText(qualification);
+                    locationTV.setText(location);
+                    specialityTV.setText(speciality);
+
                     try {
                         Picasso.get().load(image).into(avatarIV);
                     }catch (Exception e){
@@ -153,6 +157,7 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -161,36 +166,36 @@ public class ProfileFragment extends Fragment {
         });
 
 
-
-
-        return view;
     }
 
-    private boolean checkStoragePermissions(){
-        boolean result= ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    private boolean checkStoragePermissions1(){
+        boolean result= ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 ==(PackageManager.PERMISSION_GRANTED);
         return result;
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private  void requestStoragePermission(){
         requestPermissions(storagePermissions,STORAGE_REQUEST_CODE);
     }
+
     private boolean checkCameraPermissions(){
-        boolean result= ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.CAMERA)
+        boolean result= ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA)
                 ==(PackageManager.PERMISSION_GRANTED);
-        boolean result1= ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        boolean result1= ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 ==(PackageManager.PERMISSION_GRANTED);
         return result && result1;
     }
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private  void requestCameraPermission(){
-       requestPermissions(cameraPermissions,CAMERA_REQUEST_CODE);
+        requestPermissions(cameraPermissions,CAMERA_REQUEST_CODE);
     }
-
 
     private void showEditProfileDialog() {
 
-        String[] options ={"Edit Photo","Edit Name","Edit Phone No","Edit Qualification"};
+        String[] options ={"Edit Photo","Edit Name","Edit Phone No","Edit Qualification","Edit Location","Edit Speciality"};
 
-        AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setTitle("Choose Action");
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
@@ -223,7 +228,17 @@ public class ProfileFragment extends Fragment {
                     pd.setMessage("uploading Qualification");
                     showDetailUpdateDialog("qualification");
 
+                }
+                else if(which==4){
+                    //Handle edit Location
+                    pd.setMessage("uploading Location");
+                    showDetailUpdateDialog("location");
 
+                }
+                else if(which==5){
+                    //Handle edit Location
+                    pd.setMessage("uploading speciality");
+                    showDetailUpdateDialog("speciality");
 
                 }
             }
@@ -233,16 +248,17 @@ public class ProfileFragment extends Fragment {
     }
 
     private void showDetailUpdateDialog(final String keyName) {
-        AlertDialog.Builder builder =new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder =new AlertDialog.Builder(this);
         builder.setTitle("Update "+keyName);
-        LinearLayout linearLayout =new LinearLayout(getActivity());
+        LinearLayout linearLayout =new LinearLayout(this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setPadding(10,10,10,10);
 
-        TextInputLayout textInputLayout = new TextInputLayout(getActivity());
+        TextInputLayout textInputLayout = new TextInputLayout(this);
         textInputLayout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE);
+        textInputLayout.setPadding(10,10,10,10);
 
-        final TextInputEditText editText =new TextInputEditText(getActivity());
+        final TextInputEditText editText =new TextInputEditText(this);
         editText.setHint("Enter "+ keyName);
         textInputLayout.addView(editText);
         linearLayout.addView(textInputLayout);
@@ -257,25 +273,26 @@ public class ProfileFragment extends Fragment {
                     pd.show();
                     HashMap<String,Object> result =new HashMap<>();
                     result.put(keyName,value);
-                    databaseReference.child(user.getUid()).updateChildren(result)
+                    databaseReference1.child(user.getUid()).updateChildren(result)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     pd.dismiss();
-                                    Toast.makeText(getActivity(),keyName+" Updated...",Toast.LENGTH_SHORT);
+
+                                    Toast.makeText(DoctorProfile.this,keyName+" Updated...",Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     pd.dismiss();
-                                    Toast.makeText(getActivity(),e.getMessage(),Toast.LENGTH_SHORT);
+                                    Toast.makeText(DoctorProfile.this,e.getMessage(),Toast.LENGTH_SHORT).show();
                                 }
                             });
 
                 }
                 else{
-                    Toast.makeText(getActivity(),"Please enter "+keyName,Toast.LENGTH_SHORT);
+                    Toast.makeText(DoctorProfile.this,"Please enter "+keyName,Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -300,9 +317,10 @@ public class ProfileFragment extends Fragment {
 
         String[] options ={"Camera","Gallery"};
 
-        AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setTitle("Choose Image From");
         builder.setItems(options, new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //handle FAB clicks
@@ -330,7 +348,6 @@ public class ProfileFragment extends Fragment {
         builder.show();
     }
 
-    @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
         if(resultCode== RESULT_OK){
@@ -370,12 +387,12 @@ public class ProfileFragment extends Fragment {
 
                             results.put(profilePhotoPic,downloadUri.toString().trim());
 
-                            databaseReference.child(user.getUid()).updateChildren(results)
+                            databaseReference1.child(user.getUid()).updateChildren(results)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             pd.dismiss();
-                                            Toast.makeText(getActivity(),"Image Updated....",Toast.LENGTH_SHORT);
+                                            Toast.makeText(DoctorProfile.this,"Image Updated....",Toast.LENGTH_SHORT);
 
                                         }
                                     })
@@ -384,7 +401,7 @@ public class ProfileFragment extends Fragment {
                                         public void onFailure(@NonNull Exception e) {
                                             // dismiss pd and toast that error hapee
                                             pd.dismiss();
-                                            Toast.makeText(getActivity(),"Failure!!Image not updated!!!",Toast.LENGTH_SHORT);
+                                            Toast.makeText(DoctorProfile.this,"Failure!!Image not updated!!!",Toast.LENGTH_SHORT);
 
 
                                         }
@@ -393,7 +410,7 @@ public class ProfileFragment extends Fragment {
                         }
                         else{
                             pd.dismiss();
-                            Toast.makeText(getActivity(),"some error Happens",Toast.LENGTH_SHORT);
+                            Toast.makeText(DoctorProfile.this,"some error Happens",Toast.LENGTH_SHORT);
                         }
 
                     }
@@ -402,14 +419,13 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         pd.dismiss();
-                        Toast.makeText(getActivity(),e.getMessage(),Toast.LENGTH_SHORT);
+                        Toast.makeText(DoctorProfile.this,e.getMessage(),Toast.LENGTH_SHORT);
 
                     }
                 });
 
     }
 
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         switch (requestCode){
@@ -422,7 +438,7 @@ public class ProfileFragment extends Fragment {
                         pickFromCamera();
                     }
                     else{
-                        Toast.makeText(getActivity(),"Please Enable Camera Permission",Toast.LENGTH_SHORT);
+                        Toast.makeText(DoctorProfile.this,"Please Enable Camera Permission",Toast.LENGTH_SHORT);
                     }
                 }
             }
@@ -434,7 +450,7 @@ public class ProfileFragment extends Fragment {
                         pickFromGallery();
                     }
                     else{
-                        Toast.makeText(getActivity(),"Please Enable Storage Permission",Toast.LENGTH_SHORT);
+                        Toast.makeText(DoctorProfile.this,"Please Enable Storage Permission",Toast.LENGTH_SHORT);
                     }
                 }
             }
@@ -457,10 +473,54 @@ public class ProfileFragment extends Fragment {
         contentValues.put(MediaStore.Images.Media.TITLE,"Temp Pic");
         contentValues.put(MediaStore.Images.Media.DESCRIPTION,"Temp Description");
 
-        image_uri=getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,contentValues);
+        image_uri=this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,contentValues);
 
         Intent cameraIntent =new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,image_uri);
         startActivityForResult(cameraIntent,IMAGE_PICK_CAMERA_REQUEST_CODE);
     }
+
+
+
+
+    private void checkUserStatus(){
+        FirebaseUser user =firebaseAuth.getCurrentUser();
+        if(user!=null){
+            //stay here
+        }
+        else{
+            //no user found go to main
+            startActivity(new Intent(DoctorProfile.this, LoginActivity.class));
+            finish();
+        }
+    }
+
+    private boolean checkStoragePermissions(){
+        boolean result= ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                ==(PackageManager.PERMISSION_GRANTED);
+        return result;
+    }
+
+
+
+
+
+
+
+
+
+    @Override
+    protected void onStart() {
+        checkUserStatus();
+        super.onStart();
+    }
+
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
 }
