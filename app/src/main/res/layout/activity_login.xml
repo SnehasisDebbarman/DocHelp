@@ -1,146 +1,261 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity"
+    android:background="@drawable/bc"
     android:orientation="vertical"
     android:verticalScrollbarPosition="defaultPosition"
-    >
-
+    tools:context=".LoginActivity">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="40dp">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="50dp"
-        android:textStyle="bold"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:text="@string/login"
-        android:textAllCaps="true"
-        android:textAlignment="center"
-        android:textColor="@color/colorPrimary"
-        android:textSize="70sp" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_margin="10dp"
-        android:hint="@string/email"
-       >
-        <com.google.android.material.textfield.TextInputEditText
-            android:drawableLeft="@drawable/ic_email"
-            android:id="@+id/emailET"
+        android:layout_height="150dp"
+        android:background="@drawable/bc2">
+        <TextView
+            android:padding="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:autofillHints="button"
-            android:inputType="textEmailAddress"
-            />
-
-     </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Password"
-        app:passwordToggleEnabled = "true"
-        app:passwordToggleTint="#3F51B5"
-        android:layout_margin="10dp"
-
-        >
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/passET"
-            android:drawableStart="@drawable/ic_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-
-            />
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginTop="25sp"
-            android:layout_gravity="center"
-            android:id="@+id/loginDoctorBtn"
-            android:text="login as Doctor"
-            android:textSize="12dp"
-            android:textAllCaps="true"
+            android:fontFamily="@font/quicksand_bold"
             android:textStyle="bold"
-            android:textAlignment="center"
-            android:textColor="#fff"
-            android:padding="10dp"
-            android:layout_margin="10dp"
-            />
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginTop="25sp"
-            android:layout_gravity="center"
-            android:id="@+id/loginPatientBtn"
-            android:text="login as patient"
-            android:textSize="12sp"
-            android:textAllCaps="true"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            android:textColor="#fff"
-            android:padding="10dp"
-            android:layout_margin="10dp"
-            />
+            android:text="Welcome Back"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:textAlignment="viewEnd"
+            android:layout_gravity="bottom"
+            tools:ignore="RtlCompat" />
+
 
     </LinearLayout>
 
-
-
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
-
-    <TextView
-            android:id="@+id/forget_password"
-            android:textColor="#000"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:text="Forget password?" />
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="right">
-        <TextView
-            android:layout_alignParentLeft="true"
-            android:id="@+id/have_Account"
-            android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="No Account?Register"
-            android:textSize="15sp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp"
+            app:cardPreventCornerOverlap="true">
+            <LinearLayout
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:layout_margin="20dp"
+                android:layout_marginEnd="20dp"
+                tools:ignore="RtlSymmetry">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:padding="10dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/quicksand_bold"
+                        android:textStyle="bold"
+                        android:text="Log in"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="30sp"
+                        android:layout_gravity="bottom"
+                        tools:ignore="RtlCompat" />
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:id="@+id/loginPatientSelect"
+                        android:text="as patient"
+                        app:elevation="5dp"
+                        app:backgroundTint="@color/white"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="20dp"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="5dp"
+                        app:strokeColor="@color/colorPrimary"
+                        app:strokeWidth="2dp"
+                        tools:ignore="RtlCompat" />
+                    <com.google.android.material.button.MaterialButton
+                        android:visibility="gone"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:id="@+id/loginDoctorSelect"
+                        android:text="as Doctor"
+                        app:elevation="5dp"
+                        app:backgroundTint="@color/colorPrimary"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="20dp"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="5dp"
+                        app:strokeColor="@color/colorPrimary"
+                        app:strokeWidth="2dp"
+                        tools:ignore="RtlCompat" />
+
+                </LinearLayout>
 
 
-            android:textColor="#000" />
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    app:boxBackgroundColor="@color/white"
+                    app:startIconDrawable="@drawable/ic_email">
 
-    </RelativeLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/emailET"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="button"
+                        android:hint="@string/email"
+                        android:inputType="textEmailAddress"
+                        />
 
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_weight="1"
+                    android:hint="Password"
+                    app:boxBackgroundColor="@color/white"
+                    app:passwordToggleEnabled="true"
+                    app:startIconDrawable="@drawable/ic_password"
+
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/passET"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp"
+                    tools:ignore="NestedWeights">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/loginDoctorBtn"
+                        android:text="login as Doctor"
+                        app:elevation="10dp"
+                        app:backgroundTint="@color/colorPrimary"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_weight="1"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:padding="5dp"
+                        android:textStyle="bold"
+                        app:cornerRadius="10dp"
+                        app:strokeColor="@color/colorPrimary"
+                        app:strokeWidth="3dp"
+                        tools:ignore="RtlCompat" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:visibility="gone"
+                        android:id="@+id/loginPatientBtn"
+                        android:text="login as patient"
+                        app:elevation="10dp"
+                        app:backgroundTint="@color/white"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_weight="1"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="12sp"
+                        android:padding="5dp"
+                        android:textStyle="bold"
+                        app:cornerRadius="10dp"
+                        app:strokeColor="@color/colorPrimary"
+                        app:strokeWidth="3dp"
+                        tools:ignore="RtlCompat" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/forget_password"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Forget password?"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:id="@+id/have_Account"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/no_account_register"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
 
 
 </LinearLayout>
-    </LinearLayout>
-</ScrollView>

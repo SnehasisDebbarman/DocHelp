@@ -15,7 +15,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PrescriptionFinal"></activity>
+        <activity android:name=".PrescriptionViewForPatient"></activity>
+        <activity android:name=".PrescriptionViewForDoctor"></activity>
+        <activity android:name=".PatientMedicineListForDoctor" />
+        <activity android:name=".PatientsList" />
+        <activity android:name=".PatientProfile" />
+        <activity android:name=".PrescriptionFinal" />
         <activity android:name=".PrescriptionPatientInfo" />
         <activity android:name=".DoctorProfile" />
         <activity android:name=".PatientDashboardActivity" />

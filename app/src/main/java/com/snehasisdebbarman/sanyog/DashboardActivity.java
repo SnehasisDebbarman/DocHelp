@@ -14,13 +14,13 @@ import android.view.View;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class DashboardActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     ActionBar actionBar;
-    BottomNavigationView navigationView;
-    String Auser;
-    CardView profileCV,prescriptionCV;
+    CardView profileCV,prescriptionCV,patientCV;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,12 +29,14 @@ public class DashboardActivity extends AppCompatActivity {
 
         //action bar
         actionBar= getSupportActionBar();
+        actionBar.setTitle("Dashboard");
+        actionBar.setElevation(0);
         firebaseAuth = FirebaseAuth.getInstance();
-        Intent i = getIntent();
-        Auser = i.getStringExtra("auser");
+        final FirebaseUser user=firebaseAuth.getCurrentUser();
 
         profileCV =findViewById(R.id.cardView1);
         prescriptionCV =findViewById(R.id.cardView2);
+        patientCV =findViewById(R.id.cardView3);
 
         profileCV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,9 +50,13 @@ public class DashboardActivity extends AppCompatActivity {
                 startActivity(new Intent(DashboardActivity.this, PrescriptionPatientInfo.class));
             }
         });
-
-
-
+        patientCV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(DashboardActivity.this, PatientsList.class);
+                startActivity(intent);
+            }
+        });
 
 
     }

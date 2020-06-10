@@ -9,6 +9,9 @@
     <string name="medicine_name">Medicine Name</string>
     <string name="how_many_times">How Many Times</string>
     <string name="medicine_1">Medicine 1</string>
+    <string name="add_medical_information">Add Medical Information</string>
+    <string name="no_account_register">No Account?Register</string>
+    <string name="welcome_back_nlogin">welcome back\nlogin</string>
 
 
     <string-array name="blood_group">

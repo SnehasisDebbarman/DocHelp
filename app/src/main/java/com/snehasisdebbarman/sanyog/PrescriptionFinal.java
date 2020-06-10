@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
@@ -12,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.pdf.PdfDocument;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.format.DateFormat;
@@ -20,8 +22,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,6 +38,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -42,6 +48,7 @@ import java.security.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 import static com.google.firebase.storage.FirebaseStorage.getInstance;
@@ -54,9 +61,54 @@ public class PrescriptionFinal extends AppCompatActivity {
     DatabaseReference databaseReference1;
     StorageReference storageReference;
 
-    String DoctorName,DoctorEmail,DoctorPhone,DoctorQualification,DoctorPicture,DoctorLocation;
+    String DoctorName,DoctorEmail,DoctorPhone,DoctorQualification,DoctorPicture,DoctorLocation,DoctorSpeciality;
 
-    String patientName,patientAge,patientBloodGroup,patientEmail,patientPhone,patientBloodPressure,patientWeight,patientBodyTemp;
+    String patientName,patientAge,patientBloodGroup,patientEmail,patientPhone,patientBloodPressure,patientWeight,patientBodyTemp,patientMedicalCondition;
+
+    String patient_uid;
+
+
+    public String getWhen2() {
+        return when2;
+    }
+
+    public void setWhen2(String when2) {
+        this.when2 = when2;
+    }
+
+    String when2;
+
+    public String getWhen3() {
+        return when3;
+    }
+
+    public void setWhen3(String when3) {
+        this.when3 = when3;
+    }
+
+    String when3;
+
+    public String getWhen4() {
+        return when4;
+    }
+
+    public void setWhen4(String when4) {
+        this.when4 = when4;
+    }
+
+    String when4;
+
+    public String getWhen() {
+        return when;
+    }
+
+    public void setWhen(String when) {
+        this.when = when;
+    }
+    String when;
+
+
+
     Button add,add2,add3;
     LinearLayout medicineLL2,medicineLL3,medicineLL4;
 
@@ -65,6 +117,11 @@ public class PrescriptionFinal extends AppCompatActivity {
     EditText howManyTimesET,howManyTimesET2,howManyTimesET3,howManyTimesET4;
     EditText whenET,whenET2,whenET3,whenET4;
     EditText splInstruction,splInstruction2,splInstruction3,splInstruction4;
+
+    TextView afterMeal,beforeMeal;
+    TextView afterMeal2,beforeMeal2;
+    TextView afterMeal3,beforeMeal3;
+    TextView afterMeal4,beforeMeal4;
 
     FloatingActionButton fab_createPDF;
 
@@ -82,16 +139,12 @@ public class PrescriptionFinal extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prescription_final);
-
-        firebaseAuth = FirebaseAuth.getInstance();
-        user =firebaseAuth.getCurrentUser();
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference1 =firebaseDatabase.getReference("Doctors/");
-        storageReference=getInstance().getReference();
+       // update the current
 
 
 
         Intent i = getIntent();
+        patient_uid=i.getStringExtra("patient_uid");
         patientName=i.getStringExtra("patientName");
         patientAge=i.getStringExtra("patientAge");
         patientBloodGroup=i.getStringExtra("patientBloodGroup");
@@ -100,6 +153,7 @@ public class PrescriptionFinal extends AppCompatActivity {
         patientBloodPressure=i.getStringExtra("patientBloodPressure");
         patientWeight=i.getStringExtra("patientWeight");
         patientBodyTemp=i.getStringExtra("patientBodyTemp");
+        patientMedicalCondition=i.getStringExtra("patientMedicalCondition");
 
         add=findViewById(R.id.add);
         medicineLL2=findViewById(R.id.medicineLL2);
@@ -136,8 +190,132 @@ public class PrescriptionFinal extends AppCompatActivity {
 
         fab_createPDF=findViewById(R.id.fab_createPDF);
 
+        afterMeal=findViewById(R.id.afterMealTV);
+        beforeMeal=findViewById(R.id.beforeMealTV);
+
+        afterMeal2=findViewById(R.id.afterMealTV2);
+        beforeMeal2=findViewById(R.id.beforeMealTV2);
+
+        afterMeal3=findViewById(R.id.afterMealTV3);
+        beforeMeal3=findViewById(R.id.beforeMealTV3);
+
+        afterMeal4=findViewById(R.id.afterMealTV4);
+        beforeMeal4=findViewById(R.id.beforeMealTV4);
+
+        //for medicine 1 when clicked
+
+        afterMeal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                afterMeal.setBackground(getResources().getDrawable(R.drawable.button_enabled));
+                beforeMeal.setBackground(getResources().getDrawable(R.drawable.disable_button_rounded_main_gradient));
+                beforeMeal.setTextColor(getResources().getColor(R.color.black));
+                afterMeal.setTextColor(getResources().getColor(R.color.white));
+                when="After Meal";
+                setWhen(when);
+            }
+        });
+
+        beforeMeal.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View v) {
+                beforeMeal.setBackground(getResources().getDrawable(R.drawable.button_enabled));
+                afterMeal.setBackground(getResources().getDrawable(R.drawable.disable_button_rounded_main_gradient));
+                beforeMeal.setTextColor(getResources().getColor(R.color.white));
+                afterMeal.setTextColor(getResources().getColor(R.color.black));
+                when="Before Meal";
+                setWhen(when);
+            }
+        });
+        // //for medicine 2 when clicked
+
+        afterMeal2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                afterMeal2.setBackground(getResources().getDrawable(R.drawable.button_enabled));
+                beforeMeal2.setBackground(getResources().getDrawable(R.drawable.disable_button_rounded_main_gradient));
+                beforeMeal2.setTextColor(getResources().getColor(R.color.black));
+                afterMeal2.setTextColor(getResources().getColor(R.color.white));
+                when2="After Meal";
+                setWhen2(when2);
+            }
+        });
+
+        beforeMeal2.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View v) {
+                beforeMeal2.setBackground(getResources().getDrawable(R.drawable.button_enabled));
+                afterMeal2.setBackground(getResources().getDrawable(R.drawable.disable_button_rounded_main_gradient));
+                beforeMeal2.setTextColor(getResources().getColor(R.color.white));
+                afterMeal2.setTextColor(getResources().getColor(R.color.black));
+                when2="Before Meal";
+                setWhen2(when2);
+            }
+        });
+
+        // //for medicine 3 when clicked
+
+        afterMeal3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                afterMeal3.setBackground(getResources().getDrawable(R.drawable.button_enabled));
+                beforeMeal3.setBackground(getResources().getDrawable(R.drawable.disable_button_rounded_main_gradient));
+                beforeMeal3.setTextColor(getResources().getColor(R.color.black));
+                afterMeal3.setTextColor(getResources().getColor(R.color.white));
+                when3="After Meal";
+                setWhen3(when3);
+            }
+        });
+
+        beforeMeal3.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View v) {
+                beforeMeal3.setBackground(getResources().getDrawable(R.drawable.button_enabled));
+                afterMeal3.setBackground(getResources().getDrawable(R.drawable.disable_button_rounded_main_gradient));
+                beforeMeal3.setTextColor(getResources().getColor(R.color.white));
+                afterMeal3.setTextColor(getResources().getColor(R.color.black));
+                when3="Before Meal";
+                setWhen3(when3);
+            }
+        });
 
 
+        // //for medicine 4 "when" clicked
+
+        afterMeal4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                afterMeal4.setBackground(getResources().getDrawable(R.drawable.button_enabled));
+                beforeMeal4.setBackground(getResources().getDrawable(R.drawable.disable_button_rounded_main_gradient));
+                beforeMeal4.setTextColor(getResources().getColor(R.color.black));
+                afterMeal4.setTextColor(getResources().getColor(R.color.white));
+                when4="After Meal";
+                setWhen4(when4);
+            }
+        });
+
+        beforeMeal4.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View v) {
+                beforeMeal4.setBackground(getResources().getDrawable(R.drawable.button_enabled));
+                afterMeal4.setBackground(getResources().getDrawable(R.drawable.disable_button_rounded_main_gradient));
+                beforeMeal4.setTextColor(getResources().getColor(R.color.white));
+                afterMeal4.setTextColor(getResources().getColor(R.color.black));
+                when4="Before Meal";
+                setWhen4(when4);
+            }
+        });
+
+
+
+
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        databaseReference1=FirebaseDatabase.getInstance().getReference("Doctors");
         Query query =databaseReference1.orderByChild("email").equalTo(user.getEmail());
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -149,6 +327,7 @@ public class PrescriptionFinal extends AppCompatActivity {
                     String phone =""+ds.child("Phone").getValue();
                     String qualification =""+ds.child("qualification").getValue();
                     String location =""+ds.child("location").getValue();
+                    String speciality =""+ds.child("speciality").getValue();
 
 
                     DoctorName=name;
@@ -157,6 +336,7 @@ public class PrescriptionFinal extends AppCompatActivity {
                     DoctorPicture=image;
                     DoctorPhone=phone;
                     DoctorLocation=location;
+                    DoctorSpeciality=speciality;
                 }
 
             }
@@ -201,9 +381,48 @@ public class PrescriptionFinal extends AppCompatActivity {
                 Calendar c = Calendar.getInstance();
                 System.out.println("Current time => "+c.getTime());
 
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String formattedDate = df.format(c.getTime());
 
+                String timestamp = String.valueOf(System.currentTimeMillis());
+
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                String doctor_uid=user.getUid();
+                //to give
+
+                // path to store in 'Users'
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("prescription_list");
+
+                DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference("medicine");
+
+                DatabaseReference myRef = reference.push();
+
+                String key=myRef.getKey();
+                //String key="";
+                HashMap<String,Object> hm =new HashMap<>();
+                hm.put("prescription_id", key);
+                hm.put("doctor_uid",doctor_uid);
+                hm.put("patient_uid",patient_uid);
+                hm.put("patient_name",patientName);
+                hm.put("patient_email",patientEmail);
+                hm.put("patientAge",patientAge);
+                hm.put("patientBloodGroup",patientBloodGroup);
+                hm.put("patientBloodPressure",patientBloodPressure);
+                hm.put("patientBodyTemp",patientBodyTemp);
+                hm.put("patientMedicalCondition",patientMedicalCondition);
+                hm.put("patientWeight",patientWeight);
+
+                hm.put("timestamp",timestamp);
+                myRef.setValue(hm);
+
+
+
+                //myRef.child("medicine1").setValue(hashMap);
+
+                //----------------Push Data to hashmap------------------//
+
+
+                //Start : PDF Canvas----------------------------------------//
 
                 PdfDocument document = new PdfDocument();
                 // crate a page description
@@ -305,6 +524,23 @@ public class PrescriptionFinal extends AppCompatActivity {
 
                 //medicine 1
 
+
+                //----------------Push Data to hashmap------------------//
+
+                HashMap<String,Object> hashMap =new HashMap<>();
+                hashMap.put("patient_uid",patient_uid);
+                hashMap.put("doctor_uid",doctor_uid);
+                hashMap.put("prescription_id",key);
+                hashMap.put("timestamp",timestamp);
+                hashMap.put("medicine_name",medicineNameET.getText().toString().trim());
+                hashMap.put("dose",doseET.getText().toString().trim());
+                hashMap.put("howManyTimesET",howManyTimesET.getText().toString().trim());
+                hashMap.put("when",when);
+                hashMap.put("splInstruction",splInstruction.getText().toString().trim());
+
+                // put data in hasmap
+                reference1.push().setValue(hashMap);
+
                 paintName.setColor(Color.GRAY);
                 paintName.setTextSize(45);
                 canvas.drawText(medicineNameET.getText().toString().trim()+"",100, 1450, paintName);
@@ -319,7 +555,7 @@ public class PrescriptionFinal extends AppCompatActivity {
 
                 paintName.setColor(Color.GRAY);
                 paintName.setTextSize(45);
-                canvas.drawText(whenET.getText().toString().trim()+"", ((pageWidth-200)/20)*14, 1450, paintName);
+                canvas.drawText(getWhen()+"", ((pageWidth-200)/20)*14, 1450, paintName);
 
                 paintName.setColor(Color.GRAY);
                 paintName.setTextSize(45);
@@ -331,7 +567,26 @@ public class PrescriptionFinal extends AppCompatActivity {
                 ///end of medicine 1
 
                if(addClicked==1){
+
+                   //----------------Push Data to hashmap------------------//
+
+                   HashMap<String,Object> hashMap2 =new HashMap<>();
+                   hashMap2.put("patient_uid",patient_uid);
+                   hashMap2.put("doctor_uid",doctor_uid);
+                   hashMap2.put("prescription_id",key);
+                   hashMap2.put("timestamp",timestamp);
+                   hashMap2.put("medicine_name",medicineNameET2.getText().toString().trim());
+                   hashMap2.put("dose",doseET2.getText().toString().trim());
+                   hashMap2.put("howManyTimesET",howManyTimesET2.getText().toString().trim());
+                   hashMap2.put("when",getWhen2()+"");
+                   hashMap2.put("splInstruction",splInstruction2.getText().toString().trim());
+                   // put data in hasmap
+                   reference1.push().setValue(hashMap2);
+                   //myRef.child("medicine2").setValue(hashMap2);
+                   //----------------Push Data to hashmap------------------//
                    //medicine 2
+
+
                    paintName.setColor(Color.GRAY);
                    paintName.setTextSize(45);
                    canvas.drawText(medicineNameET2.getText().toString().trim()+"", 100, 1560, paintName);
@@ -346,7 +601,7 @@ public class PrescriptionFinal extends AppCompatActivity {
 
                    paintName.setColor(Color.GRAY);
                    paintName.setTextSize(45);
-                   canvas.drawText(whenET2.getText().toString().trim()+"", ((pageWidth-200)/20)*14, 1560, paintName);
+                   canvas.drawText(getWhen2()+"", ((pageWidth-200)/20)*14, 1560, paintName);
 
                    paintName.setColor(Color.GRAY);
                    paintName.setTextSize(45);
@@ -355,23 +610,107 @@ public class PrescriptionFinal extends AppCompatActivity {
                    paintName.setColor(Color.LTGRAY);
                    canvas.drawLine(100,1610,pageWidth-100,1610,paintName);
 
-                   ///end of medicine 2
 
                }
+
+               // end of medicine 2
+
+                if(addClicked2==1){
+                    //medicine 3
+
+                    HashMap<String,Object> hashMap3 =new HashMap<>();
+                    hashMap3.put("patient_uid",patient_uid);
+                    hashMap3.put("doctor_uid",doctor_uid);
+                    hashMap3.put("prescription_id",key);
+                    hashMap3.put("timestamp",timestamp);
+                    hashMap3.put("medicine_name",medicineNameET3.getText().toString().trim());
+                    hashMap3.put("dose",doseET3.getText().toString().trim());
+                    hashMap3.put("howManyTimesET",howManyTimesET3.getText().toString().trim());
+                    hashMap3.put("when",getWhen3());
+                    hashMap3.put("splInstruction",splInstruction3.getText().toString().trim());
+                    // put data in hasmap
+                    reference1.push().setValue(hashMap3);
+                    //myRef.child("medicine2").setValue(hashMap2);
+
+
+
+                    paintName.setColor(Color.GRAY);
+                    paintName.setTextSize(45);
+                    canvas.drawText(medicineNameET3.getText().toString().trim()+"", 100, 1660, paintName);
+
+                    paintName.setColor(Color.GRAY);
+                    paintName.setTextSize(45);
+                    canvas.drawText(doseET3.getText().toString().trim()+"", ((pageWidth-200)/20)*6, 1660, paintName);
+
+                    paintName.setColor(Color.GRAY);
+                    paintName.setTextSize(45);
+                    canvas.drawText(howManyTimesET3.getText().toString().trim()+"", ((pageWidth-200)/20)*9, 1660, paintName);
+
+                    paintName.setColor(Color.GRAY);
+                    paintName.setTextSize(45);
+                    canvas.drawText(getWhen3()+"", ((pageWidth-200)/20)*14, 1660, paintName);
+
+                    paintName.setColor(Color.GRAY);
+                    paintName.setTextSize(45);
+                    canvas.drawText(splInstruction3.getText().toString().trim()+"", ((pageWidth-200)/20)*17, 1660, paintName);
+
+                    paintName.setColor(Color.LTGRAY);
+                    canvas.drawLine(100,1710,pageWidth-100,1710,paintName);
+
+
+
+
+                }
+                // end of medicine 3
+
+                if(addClicked3==1){
+                    //medicine 3
+
+                    HashMap<String,Object> hashMap4 =new HashMap<>();
+                    hashMap4.put("patient_uid",patient_uid);
+                    hashMap4.put("doctor_uid",doctor_uid);
+                    hashMap4.put("prescription_id",key);
+                    hashMap4.put("timestamp",timestamp);
+                    hashMap4.put("medicine_name",medicineNameET2.getText().toString().trim());
+                    hashMap4.put("dose",doseET2.getText().toString().trim());
+                    hashMap4.put("howManyTimesET",howManyTimesET2.getText().toString().trim());
+                    hashMap4.put("when",getWhen4());
+                    hashMap4.put("splInstruction",splInstruction2.getText().toString().trim());
+                    // put data in hasmap
+                    reference1.push().setValue(hashMap4);
+                    //myRef.child("medicine2").setValue(hashMap2);
+
+
+                    paintName.setColor(Color.GRAY);
+                    paintName.setTextSize(45);
+                    canvas.drawText(medicineNameET3.getText().toString().trim()+"", 100, 1760, paintName);
+
+                    paintName.setColor(Color.GRAY);
+                    paintName.setTextSize(45);
+                    canvas.drawText(doseET3.getText().toString().trim()+"", ((pageWidth-200)/20)*6, 1760, paintName);
+
+                    paintName.setColor(Color.GRAY);
+                    paintName.setTextSize(45);
+                    canvas.drawText(howManyTimesET3.getText().toString().trim()+"", ((pageWidth-200)/20)*9, 1760, paintName);
+
+                    paintName.setColor(Color.GRAY);
+                    paintName.setTextSize(45);
+                    canvas.drawText(getWhen4()+"", ((pageWidth-200)/20)*14, 1760, paintName);
+
+                    paintName.setColor(Color.GRAY);
+                    paintName.setTextSize(45);
+                    canvas.drawText(splInstruction3.getText().toString().trim()+"", ((pageWidth-200)/20)*17, 1760, paintName);
+
+                    paintName.setColor(Color.LTGRAY);
+                    canvas.drawLine(100,1810,pageWidth-100,1810,paintName);
+
+                }
+
+                // end of medicine 4
 
 
                 // finish the page
                 document.finishPage(page);
-// draw text on the graphics object of the page
-      /*  // Create Page 2
-        pageInfo = new PdfDocument.PageInfo.Builder(300, 600, 2).create();
-        page = document.startPage(pageInfo);
-        canvas = page.getCanvas();
-        paintText = new Paint();
-        paintText.setColor(Color.BLUE);
-        canvas.drawCircle(100, 100, 100, paintText);
-        document.finishPage(page);*/
-                // write the document content
 
                 if(checkPermission()){
                     String directory_path = Environment.getExternalStorageDirectory().getPath() + "/my_pdf/";
@@ -402,6 +741,11 @@ public class PrescriptionFinal extends AppCompatActivity {
                     requestPermission();
                 }
 
+                //End : PDF Canvas----------------------------------------//
+
+
+
+
 
 
             }
@@ -413,11 +757,7 @@ public class PrescriptionFinal extends AppCompatActivity {
 
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(PrescriptionFinal.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (result == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        } else {
-            return false;
-        }
+        return result == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestPermission() {
@@ -431,14 +771,12 @@ public class PrescriptionFinal extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.e("value", "Permission Granted, Now you can use local drive .");
-                } else {
-                    Log.e("value", "Permission Denied, You cannot use local drive .");
-                }
-                break;
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.e("value", "Permission Granted, Now you can use local drive .");
+            } else {
+                Log.e("value", "Permission Denied, You cannot use local drive .");
+            }
         }
     }
 

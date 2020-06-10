@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -36,8 +37,15 @@ public class RegisterActivity extends AppCompatActivity {
     TextView Have_account;
     private FirebaseAuth mAuth;
     RadioGroup radioGroup;
-    String Ausers="Doctors";
+    String doc_name;
 
+    public String getDoc_name() {
+        return doc_name;
+    }
+
+    public void setDoc_name(String doc_name) {
+        this.doc_name = doc_name;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
         actionBar.setTitle("Create Account");
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.hide();
         mAuth = FirebaseAuth.getInstance();
 
         mEmailEt=findViewById(R.id.emailET);
@@ -64,32 +73,11 @@ public class RegisterActivity extends AppCompatActivity {
         mProgressDialog =new ProgressDialog(this);
         mProgressDialog.setMessage("registering user......");
 
-
-        /*// radio
-        radioGroup  = findViewById(R.id.radio);
-
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-        {
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch(checkedId){
-                    case R.id.doctorClicked:
-                        Ausers ="Doctors";
-                        // do operations specific to this selection
-                        break;
-                    case R.id.patientClicked:
-                        Ausers ="Patients";
-                        // do operations specific to this selection
-                        break;
-
-                }
-            }
-        });*/
-        // radio end
-
         mRegisterDoctorBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String name=mNameEt.getText().toString().trim();
+                setDoc_name(name);
                 String email=mEmailEt.getText().toString().trim();
                 String password=mPassEt.getText().toString().trim();
                 if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
@@ -109,7 +97,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        mRegisterPatientBtn.setOnClickListener(new View.OnClickListener() {
+      /*  mRegisterPatientBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String name=mNameEt.getText().toString().trim();
@@ -130,7 +118,7 @@ public class RegisterActivity extends AppCompatActivity {
                     registerPatient(email,password,name);
                 }
             }
-        });
+        });*/
         //handle account
         Have_account.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,13 +142,19 @@ public class RegisterActivity extends AppCompatActivity {
                             // Sign in success , dis,iss dialog start  register activity
                             mProgressDialog.dismiss();
                             FirebaseUser user = mAuth.getCurrentUser();
-                            String email= user.getEmail();
                             String uid =user.getUid();
+
+                            Map<String, Object> claims = new HashMap<>();
+                            claims.put("admin", true);
+
+                            // setCustomUserClaims(uid, claims);
+
+                            String email= user.getEmail();
                             HashMap<Object,String> hashMap =new HashMap<>();
 
                                 hashMap.put("email",email);
                                 hashMap.put("doc_uid",uid);
-                                hashMap.put("name","");// will add later one edit profile
+                                hashMap.put("name",getDoc_name());// will add later one edit profile
                                 hashMap.put("Phone","");// will add later one edit profile
                                 hashMap.put("image","");
                                 hashMap.put("qualification","");
@@ -174,9 +168,19 @@ public class RegisterActivity extends AppCompatActivity {
                                 // put data in hasmap
                                 reference.child(uid).setValue(hashMap);
 
+                            HashMap<Object,String> hm =new HashMap<>();
+                            hm.put("uid",uid);
+                            hm.put("isDoctor","true");
+                            hm.put("isPatient","false");
+                            hm.put("patient_uid","");
+                            // path to store in 'Users'
+                            DatabaseReference ref = database.getReference("Users");
+                            // put data in hasmap
+                            ref.push().setValue(hm);
+
                                 Toast.makeText(RegisterActivity.this,"Doctor Registered.....\n"+user.getEmail(),Toast.LENGTH_SHORT).show();
                                 Intent i = new Intent(RegisterActivity.this, DashboardActivity.class);
-                                i.putExtra("auser", Ausers);
+                                i.putExtra("auser", "Doctors");
                                 startActivity(i);
                                // startActivity(new Intent(RegisterActivity.this, DashboardActivity.class));
 
@@ -201,7 +205,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
     }
-    private void registerPatient(String email, String password,String name) {
+  /*  private void registerPatient(String email, String password,String name) {
         mProgressDialog.show();
         final String nn=name;
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -221,9 +225,7 @@ public class RegisterActivity extends AppCompatActivity {
                             hashMap.put("name",nn);// will add later one edit profile
                             hashMap.put("Phone","");// will add later one edit profile
                             hashMap.put("image","");
-                            hashMap.put("qualification","");
-                            hashMap.put("speciality","");
-                            hashMap.put("location","");// will add later one edit profile// will add later one edit profile
+                            // will add later one edit profile// will add later one edit profile
 
                             //firebase database instance
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -259,7 +261,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
     }
-
+*/
     public boolean checkRegisterStatus(){
         return false;
     }

@@ -4,66 +4,110 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".MainActivity">
 
     <!---register button -->
 
-    <ImageView
-        android:layout_marginTop="100dp"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/question"
-        android:layout_gravity="center"/>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp">
-        <com.google.android.material.textview.MaterialTextView
+        android:layout_height="200dp"
+        android:background="@drawable/bc2">
+        <TextView
+            android:padding="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:layout_gravity="center|center_horizontal"
-            android:textSize="20sp"
-            android:text="DocHelp Sanyog "
+            android:fontFamily="@font/quicksand_bold"
             android:textStyle="bold"
-            android:textColor="@color/black"/>
+            android:text="Hello"
+            android:textColor="@color/white"
+            android:textSize="50sp"
+            android:textAlignment="viewEnd"
+            android:layout_gravity="bottom"
+            tools:ignore="RtlCompat" />
 
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
+        android:layout_marginTop="60dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/register_btn"
-            style="@style/AppTheme"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:padding="@dimen/paddingMedium"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
+        app:cardPreventCornerOverlap="true">
+        <LinearLayout
+            android:background="@color/white"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_register_white"
-            android:background="@color/colorPrimary"
-            android:text="Register"
-            android:textColor="#fff"
-            android:layout_margin="10dp"
-            />
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:layout_margin="20dp"
+            android:layout_marginEnd="20dp"
+            tools:ignore="RtlSymmetry">
+            <TextView
+                android:padding="10dp"
+                android:layout_marginBottom="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/quicksand_bold"
+                android:textStyle="bold"
+                android:text="Welcome To DocHelp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:layout_gravity="bottom"
+                tools:ignore="RtlCompat" />
+            <com.google.android.material.button.MaterialButton
+                app:elevation="10dp"
+                app:backgroundTint="@color/colorPrimary"
+                android:id="@+id/register_btn"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:padding="18dp"
+                android:layout_margin="10dp"
+                android:text="Register"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:cornerRadius="10dp"
+                app:strokeColor="@color/colorPrimary"
+                app:strokeWidth="3dp"
+                tools:ignore="RtlCompat" />
+            <com.google.android.material.button.MaterialButton
+                app:elevation="10dp"
+                app:backgroundTint="@color/white"
+                android:id="@+id/login_btn"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:padding="18dp"
+                android:layout_margin="10dp"
+                android:text="Sign in"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textColor="@color/colorPrimary"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:cornerRadius="10dp"
+                app:strokeColor="@color/colorPrimary"
+                app:strokeWidth="3dp"
+                tools:ignore="RtlCompat" />
 
-        <com.google.android.material.button.MaterialButton
-            style="@style/AppTheme"
-            android:id="@+id/login_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Login"
-            android:textColor="#fff"
-            android:padding="10sp"
-            android:drawableLeft="@drawable/ic_login_white"
-            android:background="@color/colorPrimary"
-            android:layout_margin="10dp"
-            />
 
-    </LinearLayout>
+
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+
 
 </LinearLayout>

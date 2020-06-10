@@ -3,6 +3,7 @@ package com.snehasisdebbarman.sanyog;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -22,6 +23,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,6 +32,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -61,7 +64,7 @@ public class DoctorProfile extends AppCompatActivity {
 
     ImageView avatarIV;
     TextView nameTV, emailTV, phoneTV,qualificationTV,locationTV,specialityTV;
-    FloatingActionButton fab;
+    MaterialButton fab;
     ProgressDialog pd;
 
 
@@ -84,6 +87,9 @@ public class DoctorProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor_profile);
+        ActionBar actionBar =getSupportActionBar();
+        actionBar.hide();
+
 
         if(auser==null){
             auser="Doctors";
@@ -91,7 +97,7 @@ public class DoctorProfile extends AppCompatActivity {
         firebaseAuth =FirebaseAuth.getInstance();
         user =firebaseAuth.getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference1 =firebaseDatabase.getReference(auser+"/");
+        databaseReference1 =firebaseDatabase.getReference("Doctors");
         storageReference=getInstance().getReference();
 
 
@@ -113,6 +119,7 @@ public class DoctorProfile extends AppCompatActivity {
         storagePermissions=new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
         Query query =databaseReference1.orderByChild("email").equalTo(user.getEmail());
+        pd.setMessage("Please Wait....");
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -124,18 +131,8 @@ public class DoctorProfile extends AppCompatActivity {
                     String qualification =""+ds.child("qualification").getValue();
                     String location =""+ds.child("location").getValue();
                     String speciality =""+ds.child("speciality").getValue();
-
-
-                    if(name!=""){
-                        String name1= "Dr. "+name;
-                        nameTV.setText(name1);
-
-                    }
-                    else{
-                        nameTV.setText("Add Name");
-
-                    }
-
+                    String name1= "Dr. "+name;
+                    nameTV.setText(name1);
                     emailTV.setText(email);
                     phoneTV.setText(phone);
                     qualificationTV.setText(qualification);
@@ -145,7 +142,7 @@ public class DoctorProfile extends AppCompatActivity {
                     try {
                         Picasso.get().load(image).into(avatarIV);
                     }catch (Exception e){
-                        Picasso.get().load(R.drawable.ic_add_image).into(avatarIV);
+                        Picasso.get().load(R.drawable.ic_person).into(avatarIV);
                     }
 
                 }
@@ -154,6 +151,7 @@ public class DoctorProfile extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+
 
             }
         });
