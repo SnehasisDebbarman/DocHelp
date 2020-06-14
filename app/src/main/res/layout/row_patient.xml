@@ -64,6 +64,17 @@
                 android:textSize="16dp"
                 android:fontFamily="@font/quicksand_bold"
                 />
+            <TextView
+                android:padding="3dp"
+                android:id="@+id/row_patient_age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="jhjweoowep"
+                android:textSize="16dp"
+                android:fontFamily="@font/quicksand_bold"
+                />
+
 
         </LinearLayout>
 

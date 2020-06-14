@@ -502,11 +502,6 @@ public class DoctorProfile extends AppCompatActivity {
 
 
 
-
-
-
-
-
     @Override
     protected void onStart() {
         checkUserStatus();

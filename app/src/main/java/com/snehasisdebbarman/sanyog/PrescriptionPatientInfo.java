@@ -6,11 +6,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,16 +34,18 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Calendar;
 import java.util.HashMap;
 
 public class PrescriptionPatientInfo extends AppCompatActivity {
-    EditText patientNameET,patientAgeET,patientBloodGroupET,patientEmailET,patientPhoneET,patientBloodPressureET,patientWeightET,patientBodyTempET,patientMedicalCondition;
+    EditText patientNameET,patientAgeET,patientBloodGroupET,patientEmailET,patientPhoneET,patientBloodPressureET,patientWeightET,patientBodyTempET,patientMedicalCondition,patientSugarET;
     FloatingActionButton fab_save_info;
     FirebaseAuth mAuth,mAuth2;
     DatabaseReference databaseReference;
     ProgressDialog mProgressDialog;
     CardView medicalInformationLL,patientInformation,showPatientinfo;
     TextView pname,pemail,pphone,medicalInformationTV;
+    private int mYear, mMonth, mDay, mHour, mMinute;
 
 
     TextView maleTV,femaleTV;
@@ -80,6 +86,7 @@ public class PrescriptionPatientInfo extends AppCompatActivity {
         patientWeightET=findViewById(R.id.patientWeightET);
         patientBodyTempET=findViewById(R.id.patientBodyTempET);
         patientMedicalCondition=findViewById(R.id.patientMedicalCondition);
+        patientSugarET=findViewById(R.id.patientSugerET);
 
 
         fab_save_info=findViewById(R.id.fab_save_Info);
@@ -96,6 +103,33 @@ public class PrescriptionPatientInfo extends AppCompatActivity {
         pphone=findViewById(R.id.pphone);
         maleTV=findViewById(R.id.maleTV);
         femaleTV=findViewById(R.id.femaleTV);
+        //date picker
+      /*  patientAgeET.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+                DatePickerDialog datePicker =new DatePickerDialog(PrescriptionPatientInfo.this, new DatePickerDialog.OnDateSetListener() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+                        patientAgeET.setText(dayOfMonth + "-" + (month + 1) + "-" + year);
+
+
+                    }
+                },mYear,mMonth,mDay);
+
+                datePicker.show();
+            }
+        });*/
+
+
+
+
+
 
         maleTV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,6 +224,8 @@ public class PrescriptionPatientInfo extends AppCompatActivity {
                                         }
                                         else
                                         {
+                                            String age=patientAgeET.getText().toString().trim();
+
                                             mProgressDialog.dismiss();
                                             Toast.makeText(PrescriptionPatientInfo.this, "Registration successful",
                                                     Toast.LENGTH_SHORT).show();
@@ -203,7 +239,7 @@ public class PrescriptionPatientInfo extends AppCompatActivity {
                                             hashMap.put("id",uid);
                                             hashMap.put("patientEmail",email1);
                                             hashMap.put("patientName",name);// will add later one edit profile
-                                            hashMap.put("patientAge",patientAgeET.getText().toString().trim());
+                                            hashMap.put("patientAge",age);
                                             hashMap.put("patientBloodGroup",patientBloodGroupET.getText().toString().trim());
                                             hashMap.put("patientPhoneET",id);
                                             hashMap.put("patientBloodPressure",patientBloodPressureET.getText().toString().trim());
@@ -211,27 +247,11 @@ public class PrescriptionPatientInfo extends AppCompatActivity {
                                             hashMap.put("patientBodyTemp",patientBodyTempET.getText().toString().trim());
                                             hashMap.put("patientMedicalCondition",patientMedicalCondition.getText().toString().trim());
                                             hashMap.put("patientGender",getGender());
+                                            hashMap.put("patientSugar",patientSugarET.getText().toString().trim());
                                             reference.child(uid).setValue(hashMap);
 
 
-                                            HashMap<Object,String> hmap =new HashMap<>();
-                                            hmap.put("patient_uid",uid);
-                                            hmap.put("isPatient","true");
-                                            hmap.put("uid","");
-                                            hmap.put("isDoctor","false");
-                                            // path to store in 'Users'
-
-                                            // put data in hasmap
-                                            ref.push().setValue(hmap);
-
-
-
-
-                                            finish();
                                             mAuth2.signOut();
-
-                                            //
-                                            try {
                                                 Intent intent =new Intent(PrescriptionPatientInfo.this,PrescriptionFinal.class);
                                                 intent.putExtra("patient_uid", uid);
                                                 intent.putExtra("patientName",name);
@@ -243,12 +263,11 @@ public class PrescriptionPatientInfo extends AppCompatActivity {
                                                 intent.putExtra("patientWeight",patientWeightET.getText().toString().trim());
                                                 intent.putExtra("patientBodyTemp",patientBodyTempET.getText().toString().trim());
                                                 intent.putExtra("patientMedicalCondition",patientMedicalCondition.getText().toString().trim());
-                                                startActivity(intent);
+                                                intent.putExtra("patientSugar",patientSugarET.getText().toString().trim());
 
-                                            }
-                                            catch (Exception e){
-                                                e.printStackTrace();
-                                            }
+                                            startActivity(intent);
+                                                finish();
+
 
                                         }
                                     }
@@ -260,72 +279,7 @@ public class PrescriptionPatientInfo extends AppCompatActivity {
                             }
                         });
 
-
-
-                }catch (Exception es){
-                    es.printStackTrace();
-                    mAuth2.signInWithEmailAndPassword(email,id)
-                            .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                                @Override
-                                public void onSuccess(AuthResult authResult) {
-
-                                        mProgressDialog.dismiss();
-                                        Toast.makeText(PrescriptionPatientInfo.this, "Registration successful",
-                                                Toast.LENGTH_SHORT).show();
-                                        mAuth2 = FirebaseAuth.getInstance(FirebaseApp.getInstance("AnyAppName"));
-                                        FirebaseUser user = mAuth2.getCurrentUser();
-                                        String uid =user.getUid();
-                                        String  email1 =user.getEmail();
-                                        DatabaseReference reference =  FirebaseDatabase.getInstance().getReference("Patients");
-                                        HashMap<Object,String> hashMap =new HashMap<>();
-                                        hashMap.put("id",uid);
-                                        hashMap.put("patientEmail",email1);
-                                        hashMap.put("patientName",patientNameET.getText().toString().trim());// will add later one edit profile
-                                        hashMap.put("patientAge",patientAgeET.getText().toString().trim());
-                                        hashMap.put("patientBloodGroup",patientBloodGroupET.getText().toString().trim());
-                                        hashMap.put("patientPhoneET",patientPhoneET.getText().toString().trim());
-                                        hashMap.put("patientBloodPressure",patientBloodPressureET.getText().toString().trim());
-                                        hashMap.put("patientWeight",patientWeightET.getText().toString().trim());
-                                        hashMap.put("patientBodyTemp",patientBodyTempET.getText().toString().trim());
-                                        hashMap.put("patientMedicalCondition",patientMedicalCondition.getText().toString().trim());
-                                        hashMap.put("patientGender",getGender());
-                                        reference.child(uid).setValue(hashMap);
-                                        finish();
-                                        mAuth2.signOut();
-
-                                        //
-                                        try {
-                                            Intent intent =new Intent(PrescriptionPatientInfo.this,PrescriptionFinal.class);
-                                            intent.putExtra("patient_uid", uid);
-                                            intent.putExtra("patientName",patientNameET.getText().toString().trim());
-                                            intent.putExtra("patientAge",patientAgeET.getText().toString().trim());
-                                            intent.putExtra("patientBloodGroup",patientBloodGroupET.getText().toString().trim());
-                                            intent.putExtra("patientEmail",patientEmailET.getText().toString().trim());
-                                            intent.putExtra("patientPhoneET",patientPhoneET.getText().toString().trim());
-                                            intent.putExtra("patientBloodPressure",patientBloodPressureET.getText().toString().trim());
-                                            intent.putExtra("patientWeight",patientWeightET.getText().toString().trim());
-                                            intent.putExtra("patientBodyTemp",patientBodyTempET.getText().toString().trim());
-                                            intent.putExtra("patientMedicalCondition",patientMedicalCondition.getText().toString().trim());
-                                            startActivity(intent);
-
-                                        }
-                                        catch (Exception e){
-                                            e.printStackTrace();
-                                        }
-
-
-
-                                }
-                            });
-
-
-
-
-                }
-
-
-
-
+                }catch (Exception es){ es.printStackTrace(); }
 
 
             }

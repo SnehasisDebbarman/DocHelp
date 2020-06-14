@@ -1,5 +1,6 @@
 package com.snehasisdebbarman.sanyog;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.text.format.DateFormat;
@@ -30,6 +31,7 @@ public class AdapterPrescription extends  RecyclerView.Adapter<AdapterPrescripti
         return new myHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull myHolder holder, int position) {
         final  String PatientUid =prescriptionList.get(position).getPatient_uid();
@@ -39,11 +41,13 @@ public class AdapterPrescription extends  RecyclerView.Adapter<AdapterPrescripti
         final String pEmailPres=prescriptionList.get(position).getPatient_email();
         String timeStampPres=prescriptionList.get(position).getTimestamp();
 
-        String date = DateFormat.format("dd-MM-yyyy", Long.parseLong(timeStampPres)).toString();
+        String date = DateFormat.format("EEE, d MMM yyyy HH:mm:ss", Long.parseLong(timeStampPres)).toString();
+        int pos=position+1;
 
         holder.rowPresPatientName.setText(pNamePres);
+        holder.prescription_count.setText("Prescription No:"+pos);
         holder.rowPresPatientEmail.setText(pEmailPres);
-        holder.timeStamp.setText(date);
+        holder.timeStamp.setText("Created at: "+date);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,12 +71,13 @@ public class AdapterPrescription extends  RecyclerView.Adapter<AdapterPrescripti
 
     class myHolder extends RecyclerView.ViewHolder{
 
-        TextView rowPresPatientName,rowPresPatientEmail,timeStamp;
+        TextView rowPresPatientName,rowPresPatientEmail,timeStamp,prescription_count;
         public myHolder(@NonNull View itemView) {
             super(itemView);
             rowPresPatientName=itemView.findViewById(R.id.rowPresPatientName);
             rowPresPatientEmail=itemView.findViewById(R.id.rowPresPatientEmail);
             timeStamp=itemView.findViewById(R.id.timeStamp);
+            prescription_count=itemView.findViewById(R.id.prescription_count);
         }
     }
 }

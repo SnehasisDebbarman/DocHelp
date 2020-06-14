@@ -72,7 +72,9 @@
                         android:textSize="30sp"
                         android:layout_gravity="bottom"
                         tools:ignore="RtlCompat" />
+                    <!--toggle-->
                     <com.google.android.material.button.MaterialButton
+                        android:visibility="gone"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:id="@+id/loginPatientSelect"
                         android:text="as patient"

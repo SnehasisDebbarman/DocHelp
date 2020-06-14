@@ -57,27 +57,27 @@ public class PatientsList extends AppCompatActivity {
     private void getAllPatients() {
 
 
-        Query query =FirebaseDatabase.getInstance().getReference("prescription_list")
-                .orderByChild("doctor_uid")
+        Query query =FirebaseDatabase.getInstance().getReference("prescription_list");
+              /*  .orderByChild("doctor_uid")
                 .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+*/
+
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 patientList.clear();
                 for (DataSnapshot ds1:dataSnapshot.getChildren()) {
-                    ModelPrescription modelPrescription =ds1.getValue(ModelPrescription.class);
-                    setPatient_uid(modelPrescription.getPatient_uid());
+                    setPatient_uid(ds1.getKey());
                     Query query1 =FirebaseDatabase.getInstance().getReference("Patients")
                             .orderByChild("id")
                             .equalTo(getPatient_uid());
                     query1.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                           // patientList.clear();
+
                             for (DataSnapshot ds:dataSnapshot.getChildren()){
                                 ModelPatient modelPatient =ds.getValue(ModelPatient.class);
-
                                 patientList.add(modelPatient);
                                 adapterPatient=new AdapterPatient(PatientsList.this,patientList);
                                 patients_list_RV.setAdapter(adapterPatient);

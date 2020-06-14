@@ -39,7 +39,7 @@
                android:id="@+id/patientInformation"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:visibility="visible"
+
                android:padding="20dp"
                app:cardCornerRadius="10dp">
                <LinearLayout
@@ -59,7 +59,7 @@
                            android:textSize="12sp"
                            android:layout_width="match_parent"
                            android:layout_height="wrap_content"
-                           android:textColor="@color/colorPrimary"/>
+                          />
                    </com.google.android.material.textfield.TextInputLayout>
                    <com.google.android.material.textfield.TextInputLayout
                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -67,6 +67,7 @@
                        android:layout_width="match_parent"
                        android:layout_height="0dp"
                        android:layout_weight="1"
+                       app:errorEnabled="true"
                        android:hint="Patient's Email">
                        <com.google.android.material.textfield.TextInputEditText
                            android:id="@+id/patientEmailET"
@@ -74,7 +75,7 @@
                            android:layout_height="wrap_content"
                            android:textSize="12sp"
                            android:inputType="textEmailAddress"
-                           android:textColor="@color/colorPrimary"/>
+                           />
                    </com.google.android.material.textfield.TextInputLayout>
                    <com.google.android.material.textfield.TextInputLayout
 
@@ -83,6 +84,8 @@
                        android:layout_width="match_parent"
                        android:layout_height="0dp"
                        android:layout_weight="1"
+                       app:counterEnabled="true"
+                       app:counterMaxLength="10"
                        android:hint="Patient's Phone No">
                        <com.google.android.material.textfield.TextInputEditText
                            android:id="@+id/patientPhoneET"
@@ -224,13 +227,14 @@
                    android:layout_margin="10dp"
                    android:orientation="vertical">
 
-
+                   <!--edit done here baseline -->
 
                    <LinearLayout
                        android:layout_width="match_parent"
                        android:layout_height="wrap_content"
                        android:layout_margin="10dp"
-                       android:orientation="horizontal">
+                       android:orientation="horizontal"
+                       android:baselineAligned="false">
 
                        <com.google.android.material.textfield.TextInputLayout
                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -239,14 +243,15 @@
                            android:layout_marginLeft="10dp"
                            android:layout_marginRight="10dp"
                            android:layout_weight="1"
-                           android:hint="Age">
+                           app:counterEnabled="true"
+                           app:counterMaxLength="3"
+                           android:hint="Age (Yrs)">
 
                            <com.google.android.material.textfield.TextInputEditText
                                android:id="@+id/patientAgeET"
                                android:layout_width="match_parent"
                                android:layout_height="wrap_content"
                                android:inputType="number"
-                               android:textColor="@color/colorPrimary"
                                android:textSize="12sp" />
                        </com.google.android.material.textfield.TextInputLayout>
 
@@ -260,11 +265,12 @@
                            android:hint="Blood group">
 
                            <com.google.android.material.textfield.TextInputEditText
+                               android:textEditSuggestionItemLayout="@array/blood_group"
                                android:id="@+id/patientBloodGroupET"
                                android:layout_width="match_parent"
                                android:layout_height="wrap_content"
                                android:inputType="text"
-                               android:textColor="@color/colorPrimary"
+                               android:textAllCaps="true"
                                android:textSize="12sp" />
                        </com.google.android.material.textfield.TextInputLayout>
 
@@ -283,14 +289,15 @@
                            android:layout_marginLeft="10dp"
                            android:layout_marginRight="10dp"
                            android:layout_weight="1"
-                           android:hint="Weight">
+                           app:counterEnabled="true"
+                           app:counterMaxLength="3"
+                           android:hint="Weight (kg)">
 
                            <com.google.android.material.textfield.TextInputEditText
                                android:id="@+id/patientWeightET"
                                android:layout_width="match_parent"
                                android:layout_height="wrap_content"
-                               android:inputType="numberDecimal"
-                               android:textColor="@color/colorPrimary"
+                               android:inputType="number"
                                android:textSize="12sp" />
                        </com.google.android.material.textfield.TextInputLayout>
 
@@ -301,36 +308,67 @@
                            android:layout_marginLeft="10dp"
                            android:layout_marginRight="10dp"
                            android:layout_weight="1"
-                           android:hint="Body Temperature">
+                           app:counterEnabled="true"
+                           app:counterMaxLength="4"
+                           android:hint="Body Temperature (F)">
 
                            <com.google.android.material.textfield.TextInputEditText
                                android:id="@+id/patientBodyTempET"
                                android:layout_width="match_parent"
                                android:layout_height="wrap_content"
                                android:inputType="numberDecimal"
-                               android:textColor="@color/colorPrimary"
                                android:textSize="12sp" />
                        </com.google.android.material.textfield.TextInputLayout>
 
                    </LinearLayout>
 
-                   <com.google.android.material.textfield.TextInputLayout
-                       style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
+                   <LinearLayout
                        android:layout_width="match_parent"
                        android:layout_height="wrap_content"
-                       android:layout_marginStart="20dp"
-                       android:layout_marginEnd="20dp"
-                       android:layout_marginBottom="10dp"
-                       android:hint="Blood pressure">
-
-                       <com.google.android.material.textfield.TextInputEditText
-                           android:id="@+id/patientBloodPressureET"
-                           android:layout_width="match_parent"
+                       android:orientation="horizontal">
+                       <com.google.android.material.textfield.TextInputLayout
+                           style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                           android:layout_width="0dp"
+                           android:layout_weight="1"
                            android:layout_height="wrap_content"
-                           android:inputType="text"
-                           android:textColor="@color/colorPrimary"
-                           android:textSize="12sp" />
-                   </com.google.android.material.textfield.TextInputLayout>
+                           android:layout_marginStart="20dp"
+                           android:layout_marginEnd="10dp"
+                           android:layout_marginBottom="10dp"
+                           app:counterEnabled="true"
+                           app:counterMaxLength="6"
+                           android:hint="Blood pressure">
+
+                           <com.google.android.material.textfield.TextInputEditText
+                               android:id="@+id/patientBloodPressureET"
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:inputType="date"
+                               android:textSize="12sp" />
+                       </com.google.android.material.textfield.TextInputLayout>
+                       <com.google.android.material.textfield.TextInputLayout
+                           style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                           android:layout_width="0dp"
+                           android:layout_height="wrap_content"
+                           android:layout_weight="1"
+                           android:layout_marginStart="10dp"
+                           android:layout_marginEnd="20dp"
+                           android:layout_marginBottom="10dp"
+                           app:counterEnabled="true"
+                           app:counterMaxLength="4"
+                           android:hint=" Blood Sugar(mg)">
+
+                           <com.google.android.material.textfield.TextInputEditText
+                               android:id="@+id/patientSugerET"
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:inputType="date"
+                               android:textSize="12sp" />
+                       </com.google.android.material.textfield.TextInputLayout>
+
+                   </LinearLayout>
+
+
 
                    <com.google.android.material.textfield.TextInputLayout
                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -346,7 +384,6 @@
                            android:layout_width="match_parent"
                            android:layout_height="wrap_content"
                            android:inputType="text"
-                           android:textColor="@color/colorPrimary"
                            android:textSize="12sp" />
                    </com.google.android.material.textfield.TextInputLayout>
 

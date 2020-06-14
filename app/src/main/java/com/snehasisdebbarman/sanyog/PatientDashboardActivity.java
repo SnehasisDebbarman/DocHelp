@@ -31,15 +31,14 @@ public class PatientDashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_dashboard);
-
-        Intent intent=getIntent();
-        String patient_uid=intent.getStringExtra("patient_uid");
-        //action bar
-        actionBar= getSupportActionBar();
-        assert actionBar != null;
-        actionBar.setTitle("Dashboard");
         firebaseAuth = FirebaseAuth.getInstance();
 
+       /* Intent intent=getIntent();
+        String patient_uid=intent.getStringExtra("patient_uid");
+     */
+        //action bar
+        actionBar= getSupportActionBar();
+        actionBar.setTitle("Dashboard");
 
         profileCV =findViewById(R.id.cardView1);
         prescriptionCV =findViewById(R.id.cardView2);
@@ -67,8 +66,9 @@ public class PatientDashboardActivity extends AppCompatActivity {
 
         if(user!=null){
 
-     //       startActivity(new Intent(PatientDashboardActivity.this, PatientDashboardActivity.class));
-            //stay here
+
+
+     //       startActivity(new Intent(PatientDashboardActivity.this, PatientDashboardActivity.class));stay here
         }
         else{
             //no user found go to main
@@ -98,10 +98,10 @@ public class PatientDashboardActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();
     }
-
 }

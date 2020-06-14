@@ -168,15 +168,6 @@ public class RegisterActivity extends AppCompatActivity {
                                 // put data in hasmap
                                 reference.child(uid).setValue(hashMap);
 
-                            HashMap<Object,String> hm =new HashMap<>();
-                            hm.put("uid",uid);
-                            hm.put("isDoctor","true");
-                            hm.put("isPatient","false");
-                            hm.put("patient_uid","");
-                            // path to store in 'Users'
-                            DatabaseReference ref = database.getReference("Users");
-                            // put data in hasmap
-                            ref.push().setValue(hm);
 
                                 Toast.makeText(RegisterActivity.this,"Doctor Registered.....\n"+user.getEmail(),Toast.LENGTH_SHORT).show();
                                 Intent i = new Intent(RegisterActivity.this, DashboardActivity.class);

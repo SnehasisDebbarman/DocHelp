@@ -63,7 +63,7 @@ public class PrescriptionFinal extends AppCompatActivity {
 
     String DoctorName,DoctorEmail,DoctorPhone,DoctorQualification,DoctorPicture,DoctorLocation,DoctorSpeciality;
 
-    String patientName,patientAge,patientBloodGroup,patientEmail,patientPhone,patientBloodPressure,patientWeight,patientBodyTemp,patientMedicalCondition;
+    String patientName,patientAge,patientBloodGroup,patientEmail,patientPhone,patientBloodPressure,patientWeight,patientBodyTemp,patientMedicalCondition,patientSugar;
 
     String patient_uid;
 
@@ -154,6 +154,7 @@ public class PrescriptionFinal extends AppCompatActivity {
         patientWeight=i.getStringExtra("patientWeight");
         patientBodyTemp=i.getStringExtra("patientBodyTemp");
         patientMedicalCondition=i.getStringExtra("patientMedicalCondition");
+        patientSugar=i.getStringExtra("patientSugar");
 
         add=findViewById(R.id.add);
         medicineLL2=findViewById(R.id.medicineLL2);
@@ -381,7 +382,7 @@ public class PrescriptionFinal extends AppCompatActivity {
                 Calendar c = Calendar.getInstance();
                 System.out.println("Current time => "+c.getTime());
 
-                @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
                 String formattedDate = df.format(c.getTime());
 
                 String timestamp = String.valueOf(System.currentTimeMillis());
@@ -391,7 +392,7 @@ public class PrescriptionFinal extends AppCompatActivity {
                 //to give
 
                 // path to store in 'Users'
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("prescription_list");
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("prescription_list/"+patient_uid);
 
                 DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference("medicine");
 
@@ -411,7 +412,7 @@ public class PrescriptionFinal extends AppCompatActivity {
                 hm.put("patientBodyTemp",patientBodyTemp);
                 hm.put("patientMedicalCondition",patientMedicalCondition);
                 hm.put("patientWeight",patientWeight);
-
+                hm.put("patientSugar",patientSugar);
                 hm.put("timestamp",timestamp);
                 myRef.setValue(hm);
 
@@ -537,7 +538,6 @@ public class PrescriptionFinal extends AppCompatActivity {
                 hashMap.put("howManyTimesET",howManyTimesET.getText().toString().trim());
                 hashMap.put("when",when);
                 hashMap.put("splInstruction",splInstruction.getText().toString().trim());
-
                 // put data in hasmap
                 reference1.push().setValue(hashMap);
 
@@ -749,7 +749,6 @@ public class PrescriptionFinal extends AppCompatActivity {
 
 
             }
-
 
         });
 

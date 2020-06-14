@@ -14,33 +14,47 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:orientation="vertical">
-        <TextView
-            android:padding="2dp"
-            android:id="@+id/rowPresPatientName"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/quicksand_bold"
-            android:textStyle="bold"
-            android:textSize="25sp"
-            android:text="Patient name"/>
+            android:orientation="horizontal">
+            <TextView
+                android:padding="2dp"
+                android:id="@+id/rowPresPatientName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/quicksand_bold"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:text="Patient name"/>
+            <TextView
+                android:padding="2dp"
+                android:id="@+id/prescription_count"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/quicksand_bold"
+                android:textSize="16sp"
+                android:text="Prescription No."/>
+
+        </LinearLayout>
+
         <TextView
             android:padding="2dp"
             android:id="@+id/rowPresPatientEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/quicksand_bold"
-            android:textStyle="bold"
             android:text="Email"
-            android:textSize="16dp"/>
+            android:textSize="12dp"/>
         <TextView
             android:padding="1dp"
             android:id="@+id/timeStamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/quicksand_bold"
-            android:textStyle="bold"
+            android:textColor="@color/ash"
             android:text="Date/time"
-            android:textSize="16dp"/>
+            android:textSize="12dp"/>
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

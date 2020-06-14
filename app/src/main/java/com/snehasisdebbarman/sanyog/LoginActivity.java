@@ -149,7 +149,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void showRecoverPasswordDialog() {
+    public void showRecoverPasswordDialog() {
         AlertDialog.Builder builder= new AlertDialog.Builder(this);
         builder.setTitle("Recover Password");
 
@@ -204,7 +204,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void beginRecovery(String email) {
+    public void beginRecovery(String email) {
         mProgressDialog.setMessage("Sending......");
         mProgressDialog.show();
         mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -239,7 +239,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void loginDoctor(String email, String password) {
+    public void loginDoctor(String email, String password) {
         mProgressDialog.show();
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -249,29 +249,10 @@ public class LoginActivity extends AppCompatActivity {
                             mProgressDialog.dismiss();
                             // Sign in success, update UI with the signed-in user's information
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                final  String uid=user.getUid();
-                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
-                                reference.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        for(DataSnapshot ds:dataSnapshot.getChildren()){
-                                            if( ds.child("uid").getValue().toString().equals(uid)){
-                                                if( ds.child("isDoctor").getValue().toString().equals("true")){
-                                                    Toast.makeText(LoginActivity.this,"Doctors logged in.....\n",Toast.LENGTH_SHORT).show();
-                                                    Intent i = new Intent(LoginActivity.this, DashboardActivity.class);
-                                                    startActivity(i);
-                                                    finish();
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
+                                Toast.makeText(LoginActivity.this,"Doctors logged in.....\n",Toast.LENGTH_SHORT).show();
+                                Intent i = new Intent(LoginActivity.this, DashboardActivity.class);
+                                startActivity(i);
+                                finish();
                             }
                         else {
                                 mProgressDialog.dismiss();
@@ -285,14 +266,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 mProgressDialog.dismiss();
-                Toast.makeText(LoginActivity.this, ""+e.getMessage(),
+                Toast.makeText(LoginActivity.this, " Login Failed : auth failure"+e.getMessage(),
                         Toast.LENGTH_SHORT).show();
 
             }
         });
     }
 
-    private void loginPatient(String email, String password) {
+    public void loginPatient(String email, String password) {
         mProgressDialog.show();
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -302,19 +283,18 @@ public class LoginActivity extends AppCompatActivity {
                             mProgressDialog.dismiss();
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            final  String uid=user.getUid();
+                            final  String Pat_uid=user.getUid();
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
                             reference.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     for(DataSnapshot ds:dataSnapshot.getChildren()){
-                                       if( ds.child("patient_uid").getValue().toString().equals(uid) ){
+                                       if( ds.child("patient_uid").getValue().toString().equals(Pat_uid) ){
                                            if(ds.child("isPatient").getValue().toString().equals("true")){
                                                Toast.makeText(LoginActivity.this,"patient log in.....\n",Toast.LENGTH_SHORT).show();
                                                Intent i = new Intent(LoginActivity.this, PatientDashboardActivity.class);
                                                startActivity(i);
                                                finish();
-                                               break;
                                            }
                                         }
                                     }
